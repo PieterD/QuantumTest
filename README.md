@@ -1,4 +1,4 @@
 QuantumTest
 ===========
 
-Some experiments in quantum computation
+Some experiments in quantum computation.
