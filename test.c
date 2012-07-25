@@ -445,6 +445,36 @@ STARTTEST(Add) {
 	}
 } ENDTEST(Add)
 
+STARTTEST(AddV) {
+	int runs=10;
+	for (; runs>0; runs--) {
+		unsigned long a = rand()&((1<<3)-1);
+		unsigned long b = rand()&((1<<3)-1);
+		unsigned long new = (a+b)&15;
+		unsigned long m;
+		Register r = NewRegister(13, a|(b<<5));
+		/* Yeah, I'm beginning to realize the bit-order thing is a
+		 * giant mess. */
+		SubReg A = NewSubReg(5, 0,1,2,3,4);
+		SubReg B = NewSubReg(5, 5,6,7,8,9);
+		SubReg MA = NewSubReg(5, 4,3,2,1,0);
+		SubReg MB = NewSubReg(5, 9,8,7,6,5);
+		ArithAddV(&r, A, B, 11, 12);
+		m = MeasureSubReg(&r, MA);
+		if (m != a) {
+			FAIL("Failed to re-measure original a");
+		}
+		m = MeasureSubReg(&r, MB);
+		if (m != new) {
+			FAIL("Failed to re-measure original b");
+		}
+		m = MeasureQubit(&r, 11);
+		if (m != 0) {
+			FAIL("Final qubit should be 0");
+		}
+	}
+} ENDTEST(AddV)
+
 int main(void) {
 	RUNTEST(GCD);
 	RUNTEST(Near);
@@ -463,6 +493,7 @@ int main(void) {
 	RUNTEST(CCNot);
 	RUNTEST(Increment);
 	RUNTEST(Add);
+	RUNTEST(AddV);
 	return 0;
 }
 

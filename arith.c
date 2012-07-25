@@ -31,6 +31,33 @@ void ArithAddConst(Register *r, SubReg x, unsigned long y, SubReg s, unsigned lo
 	}
 }
 
+/* A new quantum ripple-carry addition circuit (2008)
+ * Steven A. Cuccaro, Thomas G. Draper, Samuel A. Kutin, David Petrie Moulton
+ * http://arxiv.org/pdf/quant-ph/0410184v1.pdf */
+static void MAJ(Register *r, unsigned long c, unsigned long b, unsigned long a) {
+	GateCNot(r, a, b);
+	GateCNot(r, a, c);
+	GateCCNot(r, c, b, a);
+}
+static void UMS(Register *r, unsigned long c, unsigned long b, unsigned long a) {
+	GateCCNot(r, c, b, a);
+	GateCNot(r, a, c);
+	GateCNot(r, c, b);
+}
+void ArithAddV(Register *r, SubReg A, SubReg B, unsigned long g, unsigned long c) {
+	int i;
+	r=r; g=g;
+	assert(A.N == B.N);
+	MAJ(r, g, B.qb[0], A.qb[0]);
+	for (i=1; i<(int)A.N; i++) {
+		MAJ(r, A.qb[i-1], B.qb[i], A.qb[i]);
+	}
+	GateCNot(r, A.qb[A.N-1], c);
+	for (i=A.N-1; i>0; i--) {
+		UMS(r, A.qb[i-1], B.qb[i], A.qb[i]);
+	}
+	UMS(r, g, B.qb[0], A.qb[0]);
+}
 
 
 
