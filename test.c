@@ -170,6 +170,25 @@ STARTTEST(Measure) {
 	FreeRegister(&r);
 } ENDTEST(Measure)
 
+STARTTEST(Fredkin) {
+	int i;
+	for (i=0; i<100; i++) {
+		unsigned long orig = rand()&7;
+		unsigned long m;
+		unsigned long new = orig;
+		Register r = NewRegister(3, orig);
+
+		if ((new&1) != 0) {
+			new = (new&1) | ((new&2)<<1) | ((new&4)>>1);
+		}
+		GateFredkin(&r, 0,1,2);
+		m = Measure(&r);
+		if (m != new) {
+			FAIL("Invalid result from Fredkin gate!");
+		}
+	}
+} ENDTEST(Fredkin)
+
 STARTTEST(Superposition) {
 	int i;
 	struct {int gate; int state[16];} data[] = {
@@ -435,6 +454,7 @@ int main(void) {
 	RUNTEST(Pauli);
 	RUNTEST(MMul);
 	RUNTEST(Measure);
+	RUNTEST(Fredkin);
 	RUNTEST(Superposition);
 	RUNTEST(Entanglement);
 	RUNTEST(SuperdenseCoding);

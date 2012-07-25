@@ -21,6 +21,7 @@ void GateCPhase(Register *r, double theta, unsigned long qb1, unsigned long qb0)
 void GateNot(Register *r, unsigned long qb);
 void GateCNot(Register *r, unsigned long qb1, unsigned long qb0);
 void GateCCNot(Register *r, unsigned long qb2, unsigned long qb1, unsigned long qb0);
+void GateFredkin(Register *r, unsigned long qb2, unsigned long qb1, unsigned long qb0);
 
 #endif
 

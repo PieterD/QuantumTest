@@ -206,4 +206,10 @@ void GateCCNot(Register *r, unsigned long qb2, unsigned long qb1, unsigned long 
 	Gate1(r, hadamard, qb0);
 }
 
+void GateFredkin(Register *r, unsigned long qb2, unsigned long qb1, unsigned long qb0) {
+	GateCNot(r, qb1, qb0);
+	GateCCNot(r, qb2, qb0, qb1);
+	GateCNot(r, qb1, qb0);
+}
+
 
